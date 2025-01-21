@@ -17,7 +17,7 @@ public class AppUser {
     private String password;
     private LocalDate regDate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Details userDetails;
 
 
@@ -37,6 +37,47 @@ public class AppUser {
         this.password = password;
         this.regDate = regDate;
         this.userDetails = userDetails;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Details getUserDetails() {
+        return userDetails;
+    }
+
+    public void setUserDetails(Details userDetails) {
+        this.userDetails = userDetails;
+    }
+
+    public LocalDate getRegDate() {
+        return regDate;
+    }
+
+    public void setRegDate(LocalDate regDate) {
+        this.regDate = regDate;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
