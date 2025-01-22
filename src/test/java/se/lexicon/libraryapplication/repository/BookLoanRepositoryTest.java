@@ -1,12 +1,11 @@
 package se.lexicon.libraryapplication.repository;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import se.lexicon.libraryapplication.entity.AppUser;
 import se.lexicon.libraryapplication.entity.Book;
 import se.lexicon.libraryapplication.entity.BookLoan;
@@ -20,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 class BookLoanRepositoryTest {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private TestEntityManager entityManager;
 
 
     @Autowired
@@ -103,12 +102,14 @@ class BookLoanRepositoryTest {
     }
 
     @Test
-    void updateBookLoan() {
+    void markBookLoanAsReturned() {
         assertFalse(bl3.isReturned());
-        bookLoanRepository.updateBookLoan(bl3.getId());
+        bookLoanRepository.markBookLoanAsReturned(bl3.getId());
         //explicitly call flush() and clear() on the EntityManager to ensure that the changes are written to the database and the cache is cleared.
         entityManager.flush();
         entityManager.clear();
+       // bookLoanRepository.flush();
+
         BookLoan bookLoan=bookLoanRepository.findById(bl3.getId()).get();
          assertTrue(bookLoan.isReturned());
     }
