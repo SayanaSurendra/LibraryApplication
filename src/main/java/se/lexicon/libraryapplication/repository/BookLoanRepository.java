@@ -29,8 +29,9 @@ public interface BookLoanRepository extends CrudRepository<BookLoan, Integer> {
     List<BookLoan> findBookLoansWithinSpecifiedDates(LocalDate startDate, LocalDate endDate);
 
     @Modifying
+    @Transactional
     @Query("update BookLoan b set b.returned= true where b.id= :loanId")
-    void updateBookLoan(@Param("loanId") Integer id);
+    void markBookLoanAsReturned(@Param("loanId") Integer id);
 
 
 
