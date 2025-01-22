@@ -1,14 +1,14 @@
 package se.lexicon.libraryapplication.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Book {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,13 @@ public class Book {
     private int maxLoanDays;
 
 
-    public Book() {
+    @ManyToMany
+    @JoinTable(name = "book_authors",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
+    private Set<Author> authors =new HashSet<>();
+
+   public Book() {
     }
 
     public Book(int id, String isbn, String title, int maxLoanDays) {
@@ -68,6 +74,16 @@ public class Book {
         this.maxLoanDays = maxLoanDays;
     }
 
+
+    public Set<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
+    }
+
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Book{");
@@ -75,6 +91,7 @@ public class Book {
         sb.append(", isbn='").append(isbn).append('\'');
         sb.append(", title='").append(title).append('\'');
         sb.append(", maxLoanDays=").append(maxLoanDays);
+        //sb.append(", authors=").append(authors);
         sb.append('}');
         return sb.toString();
     }
@@ -89,5 +106,15 @@ public class Book {
     @Override
     public int hashCode() {
         return Objects.hash(id, isbn, title, maxLoanDays);
+    }
+
+    public void addAuthors(Author author) {
+        authors.add(author);
+        author.getWrittenBooks().add(this);
+    }
+
+    public void removeAuthors(Author author) {
+        authors.remove(author);
+        author.getWrittenBooks().remove(this);
     }
 }
