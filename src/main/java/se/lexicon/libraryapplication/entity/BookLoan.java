@@ -24,7 +24,7 @@ public class BookLoan {
     @ManyToOne
     AppUser borrower;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     Book book;
 
 

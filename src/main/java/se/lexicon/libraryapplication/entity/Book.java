@@ -2,6 +2,7 @@ package se.lexicon.libraryapplication.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -17,6 +18,10 @@ public class Book {
     private String isbn;
     private String title;
     private int maxLoanDays;
+
+
+   @Column(nullable = false)
+    private boolean available= true;
 
 
     @ManyToMany
@@ -84,6 +89,15 @@ public class Book {
     }
 
 
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Book{");
@@ -116,5 +130,12 @@ public class Book {
     public void removeAuthors(Author author) {
         authors.remove(author);
         author.getWrittenBooks().remove(this);
+    }
+
+
+    public LocalDate calculateDueDate(LocalDate loanedDate) {
+
+        LocalDate dueDate =loanedDate.plusDays(maxLoanDays);
+        return dueDate;
     }
 }

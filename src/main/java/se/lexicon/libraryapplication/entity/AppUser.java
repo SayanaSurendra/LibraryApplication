@@ -3,6 +3,8 @@ package se.lexicon.libraryapplication.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +21,10 @@ public class AppUser {
 
     @OneToOne(cascade = CascadeType.PERSIST)
     private Details userDetails;
+
+
+    @OneToMany(mappedBy = "borrower")
+    private List<BookLoan> bookLoanList = new ArrayList<>();
 
 
     public AppUser() {
@@ -80,6 +86,14 @@ public class AppUser {
         this.username = username;
     }
 
+    public List<BookLoan> getBookLoanList() {
+        return bookLoanList;
+    }
+
+    public void setBookLoanList(List<BookLoan> bookLoanList) {
+        this.bookLoanList = bookLoanList;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("AppUser{");
@@ -103,4 +117,43 @@ public class AppUser {
     public int hashCode() {
         return Objects.hash(id, username, password, regDate, userDetails);
     }
+
+
+   /* public void borrowBook(BookLoan bookLoan) {
+
+        bookLoan.getBook().setAvailable(false);
+        bookLoanList.add(bookLoan);
+        bookLoan.setBorrower(this);
+    }*/
+
+    public void returnBook(BookLoan bookLoan) {
+        bookLoan.setBorrower(null);
+        bookLoan.getBook().setAvailable(true);
+        bookLoanList.remove(bookLoan);
+
+    }
+
+
+    public BookLoan borrowBook(Book book, LocalDate borrowDate) {
+        if(!book.isAvailable()){
+            return null;
+        }else{
+            LocalDate dueDate=book.calculateDueDate(borrowDate);
+            BookLoan bookLoan=new BookLoan(borrowDate,dueDate,false,this,book);
+            book.setAvailable(false);
+            bookLoanList.add(bookLoan);
+            return bookLoan;
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+
 }
